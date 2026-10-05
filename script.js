@@ -1,14 +1,18 @@
-document.documentElement.classList.add('js');
 const toggle = document.querySelector('.menu-toggle');
-const navigation = document.querySelector('#navigation');
+const shell = document.querySelector('#navigation');
+const navigation = shell.querySelector('nav');
+const desktop = window.matchMedia('(min-width: 1100px)');
+function setMenu(open) {
+  toggle.setAttribute('aria-expanded', String(open));
+  shell.classList.toggle('is-open', open);
+  shell.inert = !desktop.matches && !open;
+}
 function closeMenu() {
-  toggle.setAttribute('aria-expanded', 'false');
-  navigation.classList.remove('is-open');
+  setMenu(false);
 }
 toggle.addEventListener('click', () => {
   const open = toggle.getAttribute('aria-expanded') !== 'true';
-  toggle.setAttribute('aria-expanded', String(open));
-  navigation.classList.toggle('is-open', open);
+  setMenu(open);
 });
 navigation.addEventListener('click', event => {
   if (event.target.closest('a')) closeMenu();
@@ -19,4 +23,5 @@ document.addEventListener('keydown', event => {
     toggle.focus();
   }
 });
-window.matchMedia('(min-width: 900px)').addEventListener('change', closeMenu);
+desktop.addEventListener('change', closeMenu);
+closeMenu();
