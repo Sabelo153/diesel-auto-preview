@@ -25,3 +25,19 @@ document.addEventListener('keydown', event => {
 });
 desktop.addEventListener('change', closeMenu);
 closeMenu();
+
+// Animate once as content enters view; never hide content for reduced-motion users.
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.hero-copy, .hero-photo, .page-banner > .container, .service-card, .photo-story, .photo-grid figure, .about > div, .contact-panel, .contact-help, .location-grid > div, .page-cta').forEach(element => {
+    element.classList.add('reveal-ready');
+    observer.observe(element);
+  });
+}
